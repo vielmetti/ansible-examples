@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+     - name: install docker
+       shell: curl -fsSL get.docker.com -o get-docker.sh  && sh get-docker.sh
+
