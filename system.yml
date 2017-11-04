@@ -52,7 +52,7 @@
        shell: jq -r '.ssh_keys[]' /tmp/packet.metadata > /home/emv/.ssh/authorized_keys
 
      - name: emv sudoer create
-       file: dest=/etc/sudoers.d/emv.sudo state=touch mode=440
+       file: dest=/etc/sudoers.d/emv state=touch mode=440
 
      - name: emv sudoer copy
        copy: content="emv ALL=(ALL) NOPASSWD:ALL\n" dest=/etc/sudoers.d/emv
