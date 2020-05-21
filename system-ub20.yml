@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+     - name: Update apt-cache 
+       apt: update_cache=yes
+
+     - name: Add software-properties-common
+       apt: name=software-properties-common state=latest
+    
+     - name: Update apt-cache 
+       apt: update_cache=yes
+
+     - name: Install Ansible
+       apt: name=ansible state=latest
+
+     - name: Install Vim
+       apt: name=vim state=latest
+
+     - name: Install jq
+       apt: name=jq state=latest
+
+     - name: install finger
+       apt: name=finger state=latest
+
+     - name: create admin group
+       group: name=admin state=present
+
+     - name: install emv
+       user: name=emv uid=1001 groups=admin shell=/bin/bash
+
+     - name: make emv ssh dir
+       file: dest=/home/emv/.ssh mode=700 owner=emv group=admin state=directory
+
+     - name: get metadata
+       get_url: 
+         url: https://metadata.packet.net/metadata
+         dest: /tmp/packet.metadata
+
+     - name: write keys
+       shell: jq -r '.ssh_keys[]' /tmp/packet.metadata > /home/emv/.ssh/authorized_keys
+
+     - name: emv sudoer create
+       file: dest=/etc/sudoers.d/emv state=touch mode=440
+
+     - name: emv sudoer copy
+       copy: content="emv ALL=(ALL) NOPASSWD:ALL\n" dest=/etc/sudoers.d/emv
+
+     - name: quiet cloud warnings
+       file: dest=/var/lib/cloud/instance/warnings/.skip state=touch
+
